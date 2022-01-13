@@ -24,6 +24,7 @@ router.post('/log_user', require('../controller/utilisateur.controller').setLogi
 
 //Gestion des utilisateur
 router.post('/emp', require('../controller/employe.controller').register);
+router.post('/up_emp', require('../controller/employe.controller').update);
 router.delete('/emp/:emp_im', require('../controller/employe.controller').delete);
 router.get('/emp', require('../controller/employe.controller').getList);
 router.get('/emp_', require('../controller/employe.controller').getListDisp);
