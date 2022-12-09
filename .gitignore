@@ -1,0 +1,10 @@
+/node_modules
+/uploads/*
+nlog.txt
+elog.txt
+/test
+/files/*
+
+/statics/tmp_carte.png
+
+/tmp/*
