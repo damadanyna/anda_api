@@ -8,22 +8,21 @@ class Utilisateur{
         
         let utilisateur_data={
             util_id:{front_name:'util_id',fac:true}, 
-            util_login :{front_name:'util_login',fac:false},
-            util_mdp :{front_name:'util_mdp',fac:false,},
-            util_type :{front_name:'util_type',fac:false},
+            util_name :{front_name:"name",fac:false},
+            util_email :{front_name:"email",fac:false,},
+            util_pass :{front_name:"pass",fac:false},
+            util_status :{front_name:"stat",fac:false},
             util_date_enreg :{front_name:'util_date_enreg',fac:true,format:(a) => new Date()},
         };
 
         //Vérification du utilisateur
         const _pd_keys = Object.keys(utilisateur_data)
         let _tmp = {}
-        let _list_error = []
-        console.log(_d)
-       /*  try {
+        let _list_error = [] 
+         try {
             _pd_keys.forEach((v,i)=>{
                 _tmp = utilisateur_data[v]
-                if(!_tmp.fac && !_d[_tmp.front_name]){
-    
+                if(!_tmp.fac && !_d[_tmp.front_name]){ 
                     _list_error.push({code:_tmp.front_name})
                 }
             })
@@ -48,7 +47,7 @@ class Utilisateur{
             })
 
             //Hashage de mot de passe
-            _data['util_mdp'] = await utils.hash(_data['util_mdp'])
+            // _data['util_pass'] = await utils.hash(_data['util_pass'])
             
             //l'objet utilisateur est rempli maintenant
             // on l'insert dans la base de donnée
@@ -61,69 +60,41 @@ class Utilisateur{
             return res.send({status:false,message:"Erreur dans la base de donnée"})
         }
 
- */
-    }
-
-    static async delete(req,res){
-        try {   
-            await D.del('utilisateur',req.body)
-            //Ici tous les fonctions sur l'enregistrement d'un utilisateur
-            return res.send({status:true,message:"user supprimé."})
-        } catch (e) {
-            console.error(e)
-            return res.send({status:false,message:"Erreur dans la base de donnée"})
-        }
  
-    }  
-
-    //Récupération des détails des utilisateurs
-    static async getDetailsUser(req,res){
-        try {
-
-            let {id} = req.params
-
-            //Récupération d'un simple utilisateur
-            let user = (await D.exec_params('select * from utilisateur where util_id = ?',id))[0]
-
-            //Récupération accès modules
-            let user_access = await D.exec_params(`select * from module
-            left join util_access on module_id = ua_module_id 
-            left join utilisateur on util_id = ?`,id)
-
-
-
-            //à venir : récupération des historiques de l'utilisateur
-            let module_list = await D.exec('select * from module')
-
-
-            // console.log(user);
-
-            return res.send({status:true,user,user_access,module_list})
-
-        } catch (e) {
-            console.error(e)
-            return res.send({status:false,message:"Erreur dans la base de donnée"})
-        }
     }
-
+ 
     static async setAccess(req,res){
+         
         try {
-            let id_module = req.body.id_module
-            let util_id = req.params.util_id
+            let email = req.body.util_email 
+            let pass = req.body.util_pass 
 
-            let _f = await D.exec_params(`select * from util_access where ua_module_id = ? and ua_util_id = ?`,[id_module,util_id])
+            let _f = await D.exec_params(`select * from utilisateur where util_email = ? and util_pass = ?`,[email,pass])
             
             if(_f.length > 0){
-                await D.exec_params(`delete from util_access where ua_util_id = ? and ua_module_id = ?`,[util_id,id_module])
-            }else{
-                await D.set('util_access',{
-                    ua_module_id:id_module,
-                    ua_util_id:util_id
-                })
-                
-            }
+                await D.exec_params(`update utilisateur set util_status='0' where util_email = ? and util_pass = ?`,[email,pass])
+            }  
+            return res.send({status:true,message:'Deconnection fait'})
+        } catch (e) {
+            console.error(e)
+            return res.send({status:false,message:"Erreur dans la base de donnée"})
+        }
+    }
 
-            return res.send({status:true})
+    static async setLogin(req,res){
+         
+        try {
+            let email = req.body.util_email 
+            let pass =  req.body.util_pass
+
+            let _f = await D.exec_params(`select * from utilisateur where util_email = ? and util_pass = ?`,[email,pass])
+             
+            if(_f.length > 0){
+                await D.exec_params(`update utilisateur set util_status='1' where util_email = ? and util_pass = ?`,[email,pass])
+                return res.send({status:true,message:'connection fait'})
+            }else{
+                return res.send({status:false,message:"L'utilisateur n'existe pas"})
+            }
         } catch (e) {
             console.error(e)
             return res.send({status:false,message:"Erreur dans la base de donnée"})
@@ -146,7 +117,7 @@ class Utilisateur{
 
         try { 
             //A reserver recherche par nom_prenom
-            let reponse = await D.exec_params(`select * from utilisateur where util_type <> 'm'  order by ${filters.sort_by} limit ? offset ? `,[
+            let reponse = await D.exec_params(`select * from utilisateur   order by ${filters.sort_by} limit ? offset ? `,[
                 filters.limit,
                 (filters.page-1)*filters.limit
             ])
@@ -159,26 +130,9 @@ class Utilisateur{
             console.error(e)
             return res.send({status:false,message:"Erreur dans la base de donnée"})
         }
-    }
-    static async update(req,res){ 
-        let {user,mng_pass} = req.body 
-        delete user.util_date_enreg
-
-        try { 
-            if(mng_pass.change){
-                user.util_mdp = await utils.hash(mng_pass.pass)
-            }else{
-                delete user.util_mdp
-            }
-            
-            await D.updateWhere('utilisateur',user,{util_id:user.util_id})
-            //Ici tous les fonctions sur l'enregistrement d'un utilisateur
-            return res.send({status:true,message:"Mise à jour, fait"})
-        } catch (e) {
-            console.error(e)
-            return res.send({status:false,message:"Erreur dans la base de donnée"})
-        }
-    }
+    } 
+    
+    
 }
 
 module.exports = Utilisateur

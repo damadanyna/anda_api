@@ -16,13 +16,36 @@ router.get('/',(req,res)=>{
 });
 
 //Gestion des utilisateur
-router.post('/users',require('../controller/utilisateur.controller').register);
-router.delete('/user',require('../controller/utilisateur.controller').delete);
+router.post('/users',require('../controller/utilisateur.controller').register); 
 router.get('/users',require('../controller/utilisateur.controller').getList);
-router.put('/user/access/:util_id',require('../controller/utilisateur.controller').setAccess);
-router.get('/user/:id',require('../controller/utilisateur.controller').getDetailsUser);
-router.put('/user',require('../controller/utilisateur.controller').update);
+router.post('/dec_user',require('../controller/utilisateur.controller').setAccess);
+router.post('/log_user',require('../controller/utilisateur.controller').setLogin);  
 
+
+//Gestion des utilisateur
+router.post('/emp',require('../controller/employe.controller').register);
+router.delete('/emp/:emp_im',require('../controller/employe.controller').delete);
+router.get('/emp',require('../controller/employe.controller').getList); 
+router.get('/user/:id',require('../controller/employe.controller').getDetailsUser);
+router.put('/user',require('../controller/employe.controller').update);
+
+
+//Gestion des Presence
+router.post('/presence',require('../controller/presence.controller').register);
+router.delete('/emp/:id_pres',require('../controller/presence.controller').delete);
+router.get('/presence',require('../controller/presence.controller').getList);  
+router.get('/presence_days',require('../controller/presence.controller').getDays);  
+router.put('/presence',require('../controller/presence.controller').update);
+
+router.post('/presencee',require('../controller/presence.controller').findList);
+
+
+//Gestion des conge
+router.post('/conge',require('../controller/conge.controller').register);
+router.delete('/conge/:id_pres',require('../controller/conge.controller').delete);
+router.put('/conge',require('../controller/conge.controller').update); 
+
+router.post('/congee',require('../controller/conge.controller').findList);  
 
 
 //------
