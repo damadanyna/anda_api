@@ -47,6 +47,7 @@ create table if not exists conge(
     type_conge varchar(50) null,
     motif_conge varchar(150) null,
     nbr_jour int null,
+    etat_conge boolean not null,
     conge_date_enreg datetime null default NOW(), 
     primary key (id_conge)
 )Engine=InnoDB;

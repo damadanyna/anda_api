@@ -28,6 +28,7 @@ router.delete('/emp/:emp_im', require('../controller/employe.controller').delete
 router.get('/emp', require('../controller/employe.controller').getList);
 router.get('/user/:id', require('../controller/employe.controller').getDetailsUser);
 router.put('/user', require('../controller/employe.controller').update);
+router.post('/emps', require('../controller/employe.controller').findList);
 
 
 //Gestion des Presence
@@ -46,6 +47,11 @@ router.delete('/conge/:id_pres', require('../controller/conge.controller').delet
 router.put('/conge', require('../controller/conge.controller').update);
 
 router.post('/congee', require('../controller/conge.controller').findList);
+
+
+//Gestion des dashboard
+router.post('/dashboard', require('../controller/dashboard.controller').getList);
+
 
 
 //------
