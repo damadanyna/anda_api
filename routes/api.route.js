@@ -51,6 +51,8 @@ router.post('/congee', require('../controller/conge.controller').findList);
 router.get('/congeList', require('../controller/conge.controller').find_all_conge);
 router.post('/congeUp', require('../controller/conge.controller').update);
 
+//Gestion des abscence
+router.post('/abs', require('../controller/abscence.controller').findList);
 
 //Gestion des dashboard
 router.post('/dashboard', require('../controller/dashboard.controller').getList);
