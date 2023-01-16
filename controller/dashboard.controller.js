@@ -37,9 +37,13 @@ class Dashboard {
             //A reserver recherche par nom_prenom
             let pres_ = await D.exec_params(`select * from presence where pres_date_enreg=?`, [req.body.date_])
                 //Liste total des employe
+            let en_conge = await D.exec_params(`select * from conge where etat_conge=1`, [req.body.date_])
+                //Liste total des employe
+            let nb_male = await D.exec_params(`select * from employe where sexe='M'`, [req.body.date_])
+                //Liste total des employe
             let nb_total_employe = (await D.exec('select count(*) as nb from employe'))[0].nb
 
-            return res.send({ status: true, pres_, nb_total_employe })
+            return res.send({ status: true, pres_, nb_male, en_conge, nb_total_employe })
         } catch (e) {
             console.error(e)
             return res.send({ status: false, message: "Erreur dans la base de donnée" })
