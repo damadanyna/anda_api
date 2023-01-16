@@ -26,6 +26,7 @@ router.post('/log_user', require('../controller/utilisateur.controller').setLogi
 router.post('/emp', require('../controller/employe.controller').register);
 router.delete('/emp/:emp_im', require('../controller/employe.controller').delete);
 router.get('/emp', require('../controller/employe.controller').getList);
+router.get('/emp_', require('../controller/employe.controller').getListDisp);
 router.get('/user/:id', require('../controller/employe.controller').getDetailsUser);
 router.put('/user', require('../controller/employe.controller').update);
 router.post('/emps', require('../controller/employe.controller').findList);
@@ -47,6 +48,8 @@ router.delete('/conge/:id_pres', require('../controller/conge.controller').delet
 router.put('/conge', require('../controller/conge.controller').update);
 
 router.post('/congee', require('../controller/conge.controller').findList);
+router.get('/congeList', require('../controller/conge.controller').find_all_conge);
+router.post('/congeUp', require('../controller/conge.controller').update);
 
 
 //Gestion des dashboard

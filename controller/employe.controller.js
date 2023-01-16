@@ -209,6 +209,35 @@ class Employe {
         }
     }
 
+    static async getListDisp(req, res) {
+        let filters = req.query
+        let _obj_pat = {
+            emp_im: 'emp_im',
+            util_label: 'emp_nom_prenom',
+        }
+        let default_sort_by = 'emp_im'
+        filters.page = (!filters.page) ? 1 : parseInt(filters.page)
+        filters.limit = (!filters.limit) ? 100 : parseInt(filters.limit)
+        filters.sort_by = (!filters.sort_by) ? _obj_pat[default_sort_by] : _obj_pat[filters.sort_by]
+        try {
+            //A reserver recherche par nom_prenom
+            let reponse = await D.exec_params(`select employe.*,conge.etat_conge  from
+             employe left join conge on employe.emp_im=conge.im_emp where 
+             conge.etat_conge is null or conge.etat_conge=0  order by ${filters.sort_by} limit ? offset ? `, [
+                filters.limit,
+                (filters.page - 1) * filters.limit
+            ])
+
+            //Liste total des employe
+            let nb_total_employe = (await D.exec('select count(*) as nb from employe'))[0].nb
+
+            return res.send({ status: true, reponse, nb_total_employe })
+        } catch (e) {
+            console.error(e)
+            return res.send({ status: false, message: "Erreur dans la base de donnée" })
+        }
+    }
+
     static async findList(req, res) {
 
         // let find_val =req.body.find
