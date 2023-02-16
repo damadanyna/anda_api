@@ -4,30 +4,19 @@ let cookieParser = require('cookie-parser')
 let session = require('express-session')
 var cors = require('cors')
 
-
-// let MemoryStore = require('memorystore')(session)
-
-const { Console } = require("console");
 // get fs module for creating write streams
 const fs = require("fs");
-const { nextTick } = require('process')
-
+// const { nextTick } = require('process')
 let app = express()
-
-
-//Utilisation de socket.io
+    //Utilisation de socket.io
 let http = require('http').Server(app)
-let io = require('socket.io')(http, { path: "/api/ws", cors: { origin: '*', methods: ['GET', 'POST', 'PUT', 'DELETE'] } })
-
+let io = require('socket.io')(http, { cors: { origin: '*', methods: ['GET', 'POST', 'PUT', 'DELETE'] } })
 const oneDay = 1000 * 60 * 60 * 24;
 
 
 //Middleware
-// cookie parser middleware
-
-
+// cookie parser middleware 
 app.use(cookieParser());
-
 app.use(session({
     secret: "dama",
     saveUninitialized: true,
@@ -38,12 +27,14 @@ app.use(cors({
     credentials: true,
     origin: 'http://localhost:8080'
 }))
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: false, parameterLimit: 500000 }))
 app.use(bodyParser.json())
 
 let escape_html = (t) => {
     return t.replace(/'/g, "\\'").replace(/"/g, "\\\"")
 }
+
+io.on('connection', (socket) => {})
 
 app.use((req, res, next) => {
     req.io = io
@@ -52,10 +43,6 @@ app.use((req, res, next) => {
 })
 
 
-
-io.on('connection', (socket) => {
-    console.log('user connected');
-})
 
 
 app.use('/api', require('./routes/api.route'))

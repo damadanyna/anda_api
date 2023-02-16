@@ -1,34 +1,21 @@
+const Aut_jwt = require("../models/app_auth");
+var user = {
+    name: "Dama",
+    email: "damdanyna@gmail.com"
+}
 class Auth {
     static async login(req, res) {
         try {
-            req.session.userId = 'dany';
-            console.log(req.session);
-            return res.send(req.session)
+            const token = Aut_jwt.create_token(user)
+            return res.cookie('access_token', token, ).send({ status: true, message: 'logged leka' })
         } catch (error) {
             console.log('erreur', error);
-
-        }
-    }
-
-    static async getState_(req, res) {
-        try {
-            if (req.session.userId) {
-                return res.send({ status: true, data: req.session })
-            } else {
-                return res.send({ status: true, message: 'Deconnecter' })
-            }
-        } catch (error) {
-            return error;
         }
     }
 
     static async logout(req, res) {
-        try {
-            req.session.destroy()
-            res.send('deconnected')
-        } catch (error) {
-            console.log('erreur');
-        }
+        return res.clearCookie('access_token')
+            .send({ status: true, message: 'deconnecter' })
     }
 
 }

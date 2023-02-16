@@ -1,20 +1,36 @@
 let router = require('express').Router();
+const path = require('path')
+const uploadPath = path.join(__dirname, '../../', 'img')
+const multer = require('multer');
+const storage = multer.diskStorage({
+    destination: ((req, file, cb) => {
+        cb(null, uploadPath)
+    }),
+    filename: ((req, file, cb) => {
+        cb(null, file.originalname)
+    })
+})
+const storage2 = multer.diskStorage({})
+const upload = multer({ storage: storage })
+const upload2 = multer({ storage: storage2 })
+
+// pour la gestion d'authentification
+let auth = require('./../midleware/auth')
 
 //Message de Vérification
 router.get('/', (req, res) => {
     res.send({ message: "API 1.0 Fonctionnel" })
 });
 
-router.post('/login', require('../controller/auth.controller').login)
-router.get('/logout', require('../controller/auth.controller').logout)
+router.post('/register', require('../controller/fournisseur.controller').register)
+router.post('/login', require('../controller/fournisseur.controller').login)
+router.post('/logout', require('../controller/fournisseur.controller').logout)
+router.get('/check', require('../controller/fournisseur.controller').check_if_logged)
+router.get('/fournisseur', auth, require('../controller/fournisseur.controller').getList);
+router.put('/fournisseur', auth, require('../controller/fournisseur.controller').update);
+router.post('/img', auth, upload.single('usr-img'), require('../controller/fournisseur.controller').uploaImg);
+router.post('/imgBg', auth, upload2.single('usr-img'), require('../controller/fournisseur.controller').uploaImgBg);
 
-// check fournisseur state
-router.get('/state', require('../controller/auth.controller').getState_);
-
-
-//Gestion des fournisseur 
-router.post('/fournisseur', require('../controller/fournisseur.controller').register);
-router.get('/fournisseur', require('../controller/fournisseur.controller').getList);
 
 // router.get('/users', require('../controller/utilisateur.controller').getList);
 // router.post('/dec_user', require('../controller/utilisateur.controller').setAccess);

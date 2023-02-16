@@ -36,7 +36,9 @@ class Data {
         return new Promise((resolve, reject) => {
             let sql = "update " + table + " set ? where ? ";
             connection.query(sql, [up, where], (err, res) => {
-                if (err) return reject(err);
+                if (err) {
+                    return reject(err)
+                };
                 resolve(res);
             });
         });
