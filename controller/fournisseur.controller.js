@@ -82,16 +82,12 @@
              var _f = await D.exec_params(`select * from fournisseur where fourn_tel = ? and fourn_pass = ?`, [tel, pass])
 
              if (_f.length > 0) {
-                 try {
-                     const token = Aut_jwt.create_token(_f[0])
-                     req.io.emit('check_', Aut_jwt.decode_token(token).payload)
-                     return res.cookie('access_token', token, )
-                         .send({ status: true, message: 'connexion Scuccess', data: _f[0] })
-                 } catch (error) {
-                     console.log('erreur', error);
-                 }
+                 const token = Aut_jwt.create_token(_f[0])
+                 req.io.emit('check_', Aut_jwt.decode_token(token).payload)
+                 return res.cookie('access_token', token, )
+                     .send({ status: true, message: 'connexion Scuccess', data: _f[0] })
              } else {
-                 return res.send({ status: true, message: 'Mots de passe incorrect' })
+                 return res.send({ status: 401, message: 'Mots de passe incorrect' })
 
              }
          } catch (e) {
@@ -141,9 +137,10 @@
 
      static async uploaImg(req, res) {
          var compImgFileSavePath = path.join(__dirname, '../../', 'img', 'compressed', 'anda_img_' + new Date().getTime() + '.jpg')
+         var compImgFileSavePath2 = path.join(__dirname, '../../', 'img', 'anda_img_' + new Date().getTime() + '.jpg')
 
          var temp = compImgFileSavePath.split('/');
-         var big_name = req.file.originalname;
+         var big_name = temp[temp.length - 1];
          var smal_name = temp[temp.length - 1];
          var fourn_ = null;
          var array = req.headers.cookie.split(';');
@@ -153,16 +150,24 @@
                  fourn_ = Aut_jwt.decode_token(element.split('=')[1]).payload;
              }
          }
-         var k = await D.updateWhere('fournisseur', { fourn_img_log_middle: smal_name, fourn_img_log_big: big_name }, { fourn_id: fourn_.fourn_id })
-         sharp(req.file.path).resize(500, 500).jpeg({
-             quality: 20,
-             chromaSubsampling: '4:4:4'
-         }).toFile(compImgFileSavePath, (e, info) => {
+
+         sharp(req.file.path).jpeg({
+             quality: 60
+         }).toFile(compImgFileSavePath2, (e, info) => {
              if (e) {
                  res.send(e)
              } else {
-                 k
-                 res.send({ status: true, message: 'success' })
+                 sharp(req.file.path).resize(500, 500).jpeg({
+                     quality: 20,
+                     chromaSubsampling: '4:4:4'
+                 }).toFile(compImgFileSavePath, async(e, info) => {
+                     if (e) {
+                         res.send(e)
+                     } else {
+                         await D.updateWhere('fournisseur', { fourn_img_log_middle: smal_name, fourn_img_log_big: big_name }, { fourn_id: fourn_.fourn_id })
+                         res.send({ status: true, message: 'success' })
+                     }
+                 })
              }
          })
      }
@@ -180,14 +185,14 @@
                  fourn_ = Aut_jwt.decode_token(element.split('=')[1]).payload;
              }
          }
-         var k = await D.updateWhere('fournisseur', { fourn_img_bg: smal_name }, { fourn_id: fourn_.fourn_id })
          sharp(req.file.path).jpeg({
-             quality: 70,
+             quality: 60,
              //  chromaSubsampling: '4:4:4'
-         }).toFile(compImgFileSavePath, (e, info) => {
+         }).toFile(compImgFileSavePath, async(e, info) => {
              if (e) {
                  res.send(e)
              } else {
+                 await D.updateWhere('fournisseur', { fourn_img_bg: smal_name }, { fourn_id: fourn_.fourn_id })
                  res.send({ status: true, message: 'success' })
              }
          })

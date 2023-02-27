@@ -24,8 +24,10 @@ create table if not exists fournisseur(
 
 -- Table Produits
 create table if not exists produit(
-    prod_id int auto_increment not null,	
+    prod_id VARCHAR(100) not null,	
     fourn_id int not null,	
+    cat_id int not null,	
+    sous_cat_id int not null,	
     prod_label  varchar(100) not null, 
     prod_description  text not null,
     prod_prix int not null,
@@ -37,11 +39,19 @@ create table if not exists produit(
 -- Table image
 create table if not exists images(
     img_id int auto_increment not null,
-    prod_id int not null,
+    prod_id VARCHAR(100) not null,
     img_midle varchar(100) not null,
     img_big 	varchar(100) not null,
     img_date_enreg datetime null default NOW(),
     primary key (img_id)
+)Engine=InnoDB;
+
+create table if not exists sous_categorie(  
+    sous_cat_id int NOT NULL AUTO_INCREMENT,
+    cat_id int not null,
+    sous_cat_label varchar(100),
+    sous_cat_date_enreg DATETIME  null default NOW(),
+    primary key (sous_cat_id)
 )Engine=InnoDB;
 
 -- Table Abonement

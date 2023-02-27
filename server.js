@@ -34,7 +34,12 @@ let escape_html = (t) => {
     return t.replace(/'/g, "\\'").replace(/"/g, "\\\"")
 }
 
-io.on('connection', (socket) => {})
+io.on('connection', (socket) => {
+    socket.on('conne', () => {
+        console.log('io');
+    })
+})
+
 
 app.use((req, res, next) => {
     req.io = io
