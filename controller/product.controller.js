@@ -65,20 +65,23 @@
      static async getList(req, res) {
          var filters = req.query
          var _obj_pat = {
-             prod_id: 'prod_id',
+             prod_id: 'produit.prod_id',
          }
-         var default_sort_by = 'prod_id'
+         var default_sort_by = 'produit.prod_id'
          filters.page = (!filters.page) ? 1 : parseInt(filters.page)
          filters.limit = (!filters.limit) ? 100 : parseInt(filters.limit)
-         filters.sort_by = (!filters.sort_by) ? _obj_pat[default_sort_by] : _obj_pat[filters.sort_by]
+         filters.sort_by = (!filters.sort_by) ? _obj_pat[default_sort_by] : _obj_pat['prod_id']
          try {
-             var reponse = await D.exec_params(`select * from produit   order by ${filters.sort_by} limit ? offset ? `, [
-                 filters.limit,
-                 (filters.page - 1) * filters.limit
-             ])
+             var reponse = await D.exec_params(`select * from produit`)
+             for (let i = 0; i < reponse.length; i++) {
+                 const element = reponse[i];
+                 var img_ = await D.exec_params(`select * from images where ? `, [{ prod_id: element.prod_id }])
+                 reponse[i].images = img_
+             }
              var nb_total_produit = (await D.exec('select count(*) as nb from produit'))[0].nb
 
-             return res.send({ status: true, reponse, nb_total_produit })
+             req.io.emit('all_product', { status: true, reponse, nb_total_produit })
+             res.send()
          } catch (e) {
              console.error(e)
              return res.send({ status: false, message: "Erreur dans la base de donnée" })
