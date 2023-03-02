@@ -12,8 +12,9 @@
  };
  class images {
      static async uploaImg(req, res) {
-         var compImgFileSavePath = path.join(__dirname, '../../', 'img', 'compressed', 'anda_img_' + new Date().getTime() + '.jpg')
-         var compImgFileSavePath2 = path.join(__dirname, '../../', 'img', 'anda_img_' + new Date().getTime() + '.jpg')
+         var name_ = new Date().getTime() + '.jpg'
+         var compImgFileSavePath = path.join(__dirname, '../../', 'img', 'compressed', 'anda_img_' + name_)
+         var compImgFileSavePath2 = path.join(__dirname, '../../', 'img', 'anda_img_' + name_)
 
          var temp = compImgFileSavePath.split('/');
          var big_name = temp[temp.length - 1];

@@ -1,5 +1,7 @@
  const Aut_jwt = require('../models/app_auth');
  var D = require('../models/data')
+ var moment = require('moment')
+ moment.locale('fr')
 
  var produit_data = {
      prod_id: { front_name: "prod_id", fac: false, },
@@ -55,12 +57,14 @@
              // on l'insert dans la base de donnée
 
              await D.set('produit', _data)
+             console.log('enregister');
              return res.send({ status: true, message: 'Enregistrer' })
          } catch (e) {
              console.error(e)
              return res.send({ status: false, message: "Erreur dans la base de donnée" })
          }
      }
+
 
      static async getList(req, res) {
          var filters = req.query
@@ -79,12 +83,32 @@
                  reponse[i].images = img_
              }
              var nb_total_produit = (await D.exec('select count(*) as nb from produit'))[0].nb
+             for (const iterator of reponse) {
+                 console.log(iterator['prod_date_enreg']);
+                 iterator['prod_date_enreg'] = moment(iterator['prod_date_enreg']).fromNow();
+             }
+             //  console.log(moment(reponse.prod_date_enreg).fromNow());
+             //  reponse.prod_date_enreg = moment(reponse.prod_date_enreg).fromNow()
+             console.log(reponse);
 
              req.io.emit('all_product', { status: true, reponse, nb_total_produit })
              res.send()
          } catch (e) {
              console.error(e)
              return res.send({ status: false, message: "Erreur dans la base de donnée" })
+         }
+     }
+     static async get_my_category(req, res) {
+         var fourn = req.params
+         try {
+             var reponse = await D.exec_params(`
+             select distinct categorie.cat_label from produit left join categorie on produit.cat_id=categorie.cat_id where produit.fourn_id=? `, [fourn.fourn_id])
+
+             req.io.emit('all_cat', { reponse })
+             res.send()
+         } catch (error) {
+
+             return res.send({ status: true, error, message: 'erreur de la base de donnée' })
          }
      }
 
