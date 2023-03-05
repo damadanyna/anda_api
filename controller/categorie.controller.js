@@ -50,6 +50,7 @@
              var reponse = await D.exec_params(`select sous_categorie.sous_cat_id,sous_categorie.sous_cat_label from 
             sous_categorie left join categorie on categorie.cat_id=sous_categorie.cat_id
             where categorie.cat_id=${filters.cat_id}`)
+             console.log(reponse);
              req.io.emit('sous_categorie', { reponse })
              res.send()
          } catch (e) {

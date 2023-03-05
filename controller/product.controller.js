@@ -67,16 +67,10 @@
 
 
      static async getList(req, res) {
-         var filters = req.query
-         var _obj_pat = {
-             prod_id: 'produit.prod_id',
-         }
-         var default_sort_by = 'produit.prod_id'
-         filters.page = (!filters.page) ? 1 : parseInt(filters.page)
-         filters.limit = (!filters.limit) ? 100 : parseInt(filters.limit)
-         filters.sort_by = (!filters.sort_by) ? _obj_pat[default_sort_by] : _obj_pat['prod_id']
+
+         var fourn = req.params
          try {
-             var reponse = await D.exec_params(`select * from produit`)
+             var reponse = !req.body.cat_id ? await D.exec_params(`select * from produit where fourn_id=? order by prod_date_enreg desc`, [fourn.fourn_id]) : await D.exec_params(`select * from produit where fourn_id=? and cat_id=?  order by prod_date_enreg desc`, [fourn.fourn_id, req.body.cat_id])
              for (let i = 0; i < reponse.length; i++) {
                  const element = reponse[i];
                  var img_ = await D.exec_params(`select * from images where ? `, [{ prod_id: element.prod_id }])
@@ -84,12 +78,8 @@
              }
              var nb_total_produit = (await D.exec('select count(*) as nb from produit'))[0].nb
              for (const iterator of reponse) {
-                 console.log(iterator['prod_date_enreg']);
                  iterator['prod_date_enreg'] = moment(iterator['prod_date_enreg']).fromNow();
              }
-             //  console.log(moment(reponse.prod_date_enreg).fromNow());
-             //  reponse.prod_date_enreg = moment(reponse.prod_date_enreg).fromNow()
-             console.log(reponse);
 
              req.io.emit('all_product', { status: true, reponse, nb_total_produit })
              res.send()
@@ -102,7 +92,7 @@
          var fourn = req.params
          try {
              var reponse = await D.exec_params(`
-             select distinct categorie.cat_label from produit left join categorie on produit.cat_id=categorie.cat_id where produit.fourn_id=? `, [fourn.fourn_id])
+             select distinct categorie.* from produit left join categorie on produit.cat_id=categorie.cat_id where produit.fourn_id=? `, [fourn.fourn_id])
 
              req.io.emit('all_cat', { reponse })
              res.send()
