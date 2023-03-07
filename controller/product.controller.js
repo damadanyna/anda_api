@@ -103,40 +103,11 @@
      }
 
      static async update(req, res) {
-         var _data_body = req.body;
-         var four_model = produit_data;
-         var data_temp = {}
-         var _list_error = []
-             //  variable four_ = produit dans le cookie
-         var fourn_ = null
-         var array = req.headers.cookie.split(';');
-         for (var i = 0; i < array.length; i++) {
-             const element = array[i];
-             if (element.split('=')[0] == 'access_token' || element.split('=')[0] == ' access_token') {
-                 fourn_ = Aut_jwt.decode_token(element.split('=')[1]).payload;
-             }
-         }
-         for (const key in _data_body) {
-             data_temp[key] = four_model[key]
-             if (!data_temp.fac && _data_body[key] == "") {
-                 _list_error.push({ code: data_temp[key].front_name })
-             }
-         }
-         if (_list_error.length > 0) {
-             return res.send({ status: false, message: "Certains champs sont vide", data: _list_error })
-         }
-         for (const key in four_model) {
-             four_model[key] = fourn_[key]
-         }
-         for (const key in _data_body) {
-             four_model[key] = _data_body[key]
-         }
+         var prod_model = req.body
          try {
-             await D.updateWhere('produit', four_model, { fourn_id: fourn_.fourn_id })
-             var token = Aut_jwt.create_token(four_model)
-             req.io.emit('check_', Aut_jwt.decode_token(token).payload)
-             return res.cookie('access_token', token)
-                 .send({ status: true, message: 'Mise à jour Scuccess', data: four_model })
+             await D.updateWhere('produit', prod_model, { prod_id: req.params.prod_id })
+             req.io.emit('update_produit', { status: true, message: 'Mise à jour Scuccess', data: prod_model })
+             return res.send()
          } catch (e) {
              console.error(e)
              return res.send({ status: false, message: "Erreur dans la base de donnée" })
