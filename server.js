@@ -16,7 +16,7 @@ const oneDay = 1000 * 60 * 60 * 24;
 
 //Middleware
 // cookie parser middleware 
-app.use(cookieParser());
+app.use(cookieParser({ saveUninitialized: true, httpOnly: false }));
 app.use(session({
     secret: "dama",
     saveUninitialized: true,

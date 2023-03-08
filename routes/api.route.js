@@ -1,17 +1,6 @@
 let router = require('express').Router();
-const path = require('path')
-const uploadPath = path.join(__dirname, '../../', 'img')
 const multer = require('multer');
-const storage = multer.diskStorage({
-    destination: ((req, file, cb) => {
-        cb(null, uploadPath);
-    }),
-    filename: ((req, file, cb) => {
-        cb(null, file.originalname)
-    })
-})
 const storage2 = multer.diskStorage({})
-const upload = multer({ storage: storage })
 const upload2 = multer({ storage: storage2 })
 
 // pour la gestion d'authentification
