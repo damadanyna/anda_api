@@ -1,7 +1,6 @@
 let express = require('express')
 let bodyParser = require('body-parser')
 let cookieParser = require('cookie-parser')
-let session = require('express-session')
 var cors = require('cors')
 
 // get fs module for creating write streams
@@ -17,12 +16,7 @@ const oneDay = 1000 * 60 * 60 * 24;
 //Middleware
 // cookie parser middleware 
 app.use(cookieParser({ saveUninitialized: true, httpOnly: false }));
-app.use(session({
-    secret: "dama",
-    saveUninitialized: true,
-    cookie: { maxAge: oneDay, httpOnly: false },
-    resave: false
-}))
+
 app.use(cors({
     credentials: true,
     origin: 'http://localhost:8080'
