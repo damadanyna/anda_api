@@ -102,7 +102,7 @@
      }
 
      static async check_if_logged(req, res) {
-         var array = req.headers.cookie.split(';');
+         var array = req.headers.cookie ? req.headers.cookie.split(';') : [];
          for (var i = 0; i < array.length; i++) {
              var element = array[i];
              if (element.split('=')[0] == 'access_token' || element.split('=')[0] == ' access_token') {
