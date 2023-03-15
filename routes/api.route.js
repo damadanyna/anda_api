@@ -26,12 +26,15 @@ router.get('/categorie', auth, require('../controller/categorie.controller').get
 router.get('/categorie/:cat_id', auth, require('../controller/categorie.controller').get_this_prod);
 router.get('/sous_categorie/:sous_cat_id', auth, require('../controller/sous_categorie.controller').get_this_prod);
 router.get('/sous_categorie', auth, require('../controller/sous_categorie.controller').get_all_prod);
+router.get('/produit/:fourn_id', auth, require('../controller/product.controller').getList);
+router.post('/produit/:fourn_id', auth, require('../controller/product.controller').getList);
+
 router.post('/prod_img/:fourn_id', auth, upload2.single('usr-img'), require('../controller/img_prod.controller').uploaImg);
 router.put('/prod_img/:img_id', auth, upload2.single('usr-img'), require('../controller/img_prod.controller').update_it);
 router.post('/produit', auth, require('../controller/product.controller').save_prod);
-router.post('/produit/:fourn_id', auth, require('../controller/product.controller').getList);
 router.put('/produit/:prod_id', auth, require('../controller/product.controller').update);
-router.get('/my_category/:fourn_id', auth, require('../controller/product.controller').get_my_category);
+router.delete('/produit/:prod_id', auth, require('../controller/product.controller').delete);
+// router.get('/my_category/:fourn_id', auth, require('../controller/product.controller').get_my_category);
 
 
 module.exports = router

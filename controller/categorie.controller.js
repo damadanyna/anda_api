@@ -75,7 +75,8 @@
                  (filters.page - 1) * filters.limit
              ])
              req.io.emit('categorie', { reponse })
-             res.send()
+
+             return res.send()
                  //  return res.send({ status: true, reponse, nb_total_categorie })
          } catch (e) {
              console.error(e)

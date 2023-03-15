@@ -80,14 +80,14 @@
              var pass = req.body.fourn_pass
 
              var _f = await D.exec_params(`select * from fournisseur where fourn_tel = ? and fourn_pass = ?`, [tel, pass])
-
              if (_f.length > 0) {
                  const token = Aut_jwt.create_token(_f[0])
+                     //  console.log(Aut_jwt.decode_token(token).payload);
                  req.io.emit('check_', Aut_jwt.decode_token(token).payload)
                  return res.cookie('access_token', token, )
                      .send({ status: true, message: 'connexion Scuccess', data: _f[0] })
              } else {
-                 return res.send({ status: 401, message: 'Mots de passe incorrect' })
+                 return res.send({ status: false, message: 'Mots de passe incorrect' })
 
              }
          } catch (e) {
@@ -106,6 +106,7 @@
          for (var i = 0; i < array.length; i++) {
              var element = array[i];
              if (element.split('=')[0] == 'access_token' || element.split('=')[0] == ' access_token') {
+                 //  req.io.emit('check_', Aut_jwt.decode_token(element.split('=')[1]).payload)
                  return res.send({ status: true, data: Aut_jwt.decode_token(element.split('=')[1]).payload })
              }
          }
@@ -198,6 +199,7 @@
          })
 
      }
+
      static async update(req, res) {
          var _data_body = req.body;
          var four_model = fournisseur_data;

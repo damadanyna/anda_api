@@ -49,16 +49,9 @@
 
                  _data[v] = _d[_tmp.front_name]
              })
-
-             //Hashage de mot de passe
-             // _data['util_pass'] = await utils.hash(_data['util_pass'])
-
-             //l'objet utilisateur est rempli maintenant
-             // on l'insert dans la base de donnée
-
              await D.set('produit', _data)
-             console.log('enregister');
-             return res.send({ status: true, message: 'Enregistrer' })
+
+             return res.send({ status: true })
          } catch (e) {
              console.error(e)
              return res.send({ status: false, message: "Erreur dans la base de donnée" })
@@ -70,35 +63,25 @@
 
          var fourn = req.params
          try {
+             var reponse_ = await D.exec_params(`
+                 select distinct categorie.* from produit left join categorie on produit.cat_id=categorie.cat_id where produit.fourn_id=? `, [fourn.fourn_id])
+             req.io.emit('all_cat', { reponse_: reponse_, count: reponse_.length > 0 ? reponse_.length : null })
+
              var reponse = !req.body.cat_id ? await D.exec_params(`select * from produit where fourn_id=? order by prod_date_enreg desc`, [fourn.fourn_id]) : await D.exec_params(`select * from produit where fourn_id=? and cat_id=?  order by prod_date_enreg desc`, [fourn.fourn_id, req.body.cat_id])
              for (let i = 0; i < reponse.length; i++) {
                  const element = reponse[i];
-                 var img_ = await D.exec_params(`select * from images where ? `, [{ prod_id: element.prod_id }])
+                 var img_ = await D.exec_params(`select * from images where ?`, [{ prod_id: element.prod_id }])
                  reponse[i].images = img_
              }
-             var nb_total_produit = (await D.exec('select count(*) as nb from produit'))[0].nb
+             var nb_total = await D.exec_params(`select count(*) as nb from produit where fourn_id= ?`, [fourn.fourn_id])
              for (const iterator of reponse) {
                  iterator['prod_date_enreg'] = moment(iterator['prod_date_enreg']).fromNow();
              }
-
-             req.io.emit('all_product', { status: true, reponse, nb_total_produit })
-             res.send()
+             req.io.emit('all_product', { status: true, reponse, nb_total: nb_total[0].nb })
+             return res.send()
          } catch (e) {
              console.error(e)
              return res.send({ status: false, message: "Erreur dans la base de donnée" })
-         }
-     }
-     static async get_my_category(req, res) {
-         var fourn = req.params
-         try {
-             var reponse = await D.exec_params(`
-             select distinct categorie.* from produit left join categorie on produit.cat_id=categorie.cat_id where produit.fourn_id=? `, [fourn.fourn_id])
-
-             req.io.emit('all_cat', { reponse })
-             res.send()
-         } catch (error) {
-
-             return res.send({ status: true, error, message: 'erreur de la base de donnée' })
          }
      }
 
@@ -106,7 +89,29 @@
          var prod_model = req.body
          try {
              await D.updateWhere('produit', prod_model, { prod_id: req.params.prod_id })
-             req.io.emit('update_produit', { status: true, message: 'Mise à jour Scuccess', data: prod_model })
+             req.io.emit('update_produit', { status: true, message: 'Mise à jour success', data: prod_model })
+
+             return res.send()
+         } catch (e) {
+             console.error(e)
+             return res.send({ status: false, message: "Erreur dans la base de donnée" })
+         }
+     }
+     static async delete(req, res) {
+         var array = req.body.images
+         var prod_model = req.params
+         try {
+             for (let i = 0; i < array.length; i++) {
+                 const element = array[i].img_id;
+                 await D.exec_params(`delete from images where ? `, [{ img_id: element }])
+             }
+             await D.exec_params(`delete from produit where ? `, [prod_model])
+
+             //  var reponse = await D.exec_params(`select * from produit where fourn_id=? order by prod_date_enreg desc`, [req.user.fourn_id])
+             //  var nb_total = await D.exec_params(`select count(*) as nb from produit where fourn_id= ?`, [req.user.fourn_id])
+             //  req.io.emit('all_product', { status: true, reponse, nb_total: nb_total[0].nb })
+             req.io.emit('delete_produit', { status: true, message: 'Suppression success', data: prod_model })
+
              return res.send()
          } catch (e) {
              console.error(e)

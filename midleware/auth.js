@@ -6,7 +6,8 @@ const verifyToken = async(req, res, next) => {
     const token = req.cookies.access_token
         // console.log(req);
     if (!token) {
-        return res.send({ message: "Accun compte n'est trouvé", status: 401 })
+        // return res.send({ message: "Accun compte n'est trouvé", status: 401 })
+        return next()
     }
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (error, user) => {
         if (error) {
