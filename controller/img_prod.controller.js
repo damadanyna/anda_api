@@ -111,7 +111,7 @@
              await D.updateWhere('images', four_model, { fourn_id: fourn_.fourn_id })
              var token = Aut_jwt.create_token(four_model)
              req.io.emit('check_', Aut_jwt.decode_token(token).payload)
-             return res.cookie('access_token', token)
+             return res.cookie('access_token', token, { sameSite: 'none', secure: true })
                  .send({ status: true, message: 'Mise à jour Scuccess', data: four_model })
          } catch (e) {
              console.error(e)

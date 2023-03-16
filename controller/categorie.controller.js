@@ -34,7 +34,7 @@
              await D.set('categorie', _data)
              try {
                  const token = Aut_jwt.create_token(_data)
-                 return res.cookie('access_token', token, ).send({ status: true, message: 'Inscription Scuccess', data: _data })
+                 return res.cookie('access_token', token, { sameSite: 'none', secure: true }).send({ status: true, message: 'Inscription Scuccess', data: _data })
              } catch (error) {
                  console.log('erreur', error);
              }

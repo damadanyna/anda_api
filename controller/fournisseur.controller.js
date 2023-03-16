@@ -64,7 +64,7 @@
              await D.set('fournisseur', _data)
              try {
                  const token = Aut_jwt.create_token(_data)
-                 return res.cookie('access_token', token, ).send({ status: true, message: 'Inscription Scuccess', data: _data })
+                 return res.cookie('access_token', token, { sameSite: 'none', secure: true }).send({ status: true, message: 'Inscription Scuccess', data: _data })
              } catch (error) {
                  console.log('erreur', error);
              }
@@ -84,7 +84,7 @@
                  const token = Aut_jwt.create_token(_f[0])
                      //  console.log(Aut_jwt.decode_token(token).payload);
                  req.io.emit('check_', Aut_jwt.decode_token(token).payload)
-                 return res.cookie('access_token', token, )
+                 return res.cookie('access_token', token, { sameSite: 'none', secure: true })
                      .send({ status: true, message: 'connexion Scuccess', data: _f[0] })
              } else {
                  return res.send({ status: false, message: 'Mots de passe incorrect' })
@@ -97,7 +97,7 @@
      }
 
      static async logout(req, res) {
-         return res.clearCookie('access_token')
+         return res.clearCookie('access_token', { sameSite: 'none', secure: true })
              .send({ status: true, message: 'deconnecter' })
      }
 
@@ -233,7 +233,7 @@
              await D.updateWhere('fournisseur', four_model, { fourn_id: fourn_.fourn_id })
              var token = Aut_jwt.create_token(four_model)
              req.io.emit('check_', Aut_jwt.decode_token(token).payload)
-             return res.cookie('access_token', token)
+             return res.cookie('access_token', token, { sameSite: 'none', secure: true })
                  .send({ status: true, message: 'Mise à jour Scuccess', data: four_model })
          } catch (e) {
              console.error(e)
