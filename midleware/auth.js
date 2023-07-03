@@ -9,7 +9,7 @@ const verifyToken = async(req, res, next) => {
         // return res.send({ message: "Accun compte n'est trouvé", status: 401 })
         return next()
     }
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (error, user) => {
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1m' },(error, user) => {
         if (error) {
             return res.send({ message: 'La connexion est expiré', status: 403 })
         }
