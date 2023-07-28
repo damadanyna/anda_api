@@ -1,4 +1,3 @@
- const Aut_jwt = require('../models/app_auth');
  var D = require('../models/data')
  var moment = require('moment')
  moment.locale('fr')
@@ -89,7 +88,7 @@
          var prod_model = req.body
          try {
              await D.updateWhere('produit', prod_model, { prod_id: req.params.prod_id })
-             req.io.emit('update_produit', { status: true, message: 'Mise à jour success', data: prod_model })
+             req.io.emit('update_produit', { status: true, message: 'Mise à jour fait', data: prod_model })
 
              return res.send()
          } catch (e) {
