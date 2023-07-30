@@ -7,8 +7,8 @@ const upload2 = multer({ storage: storage2 })
 let auth = require('./../midleware/auth')
 
 //Message de Vérification
-router.get('/', (req, res) => {
-    res.send({ message: "API 1.0 Fonctionnel" })
+router.get('/',auth,(req,resp)=>{
+    return resp.send({message:'io',status:true})
 });
 
 // FOURNISSEUR

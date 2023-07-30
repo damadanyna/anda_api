@@ -4,7 +4,7 @@
  const oneDay = 1000 * 60 * 60 * 24;
  class Aut_jwt {
      static create_token(user) {
-         return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "18s" })
+         return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "1h" })
      }
      static decode_token(token) {
          const decoded = jwt.decode(token, { complete: true })

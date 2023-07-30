@@ -62,7 +62,8 @@ class Fournisseur {
             console.log(D);
             try {
                 const token = Aut_jwt.create_token(_data)
-                return res.cookie('access_token', token, { sameSite: 'none', secure: true }).send({ status: true, message: 'Inscription Scuccess', data: _data })
+                req.io.emit('check_', Aut_jwt.decode_token(token).payload)
+                return res.cookie('access_token', token, { sameSite: 'none', secure: true }).send({ status: true, message: 'Inscription Scuccess', data: _data,reload:true })
             } catch (error) {
                 console.log('erreur', error);
             }
@@ -82,7 +83,7 @@ class Fournisseur {
                 //  console.log(Aut_jwt.decode_token(token).payload);
                 req.io.emit('check_', Aut_jwt.decode_token(token).payload)
                 return res.cookie('access_token', token, { sameSite: 'none', secure: true })
-                    .send({ status: true, message: 'Félicitation', data: _f[0] })
+                    .send({ status: true, message: 'Félicitation', data: _f[0],reload:true })
             } else {
                 return res.send({ status: false, message: 'Mots de passe incorrect' })
 
@@ -95,7 +96,7 @@ class Fournisseur {
 
     static async logout(req, res) {
         return res.clearCookie('access_token', { sameSite: 'none', secure: true })
-            .send({ status: true, message: 'deconnecter' })
+            .send({ status: true, message: 'deconnecter', reload:true })
     }
 
     static async check_if_logged(req, res) {

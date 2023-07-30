@@ -10,7 +10,7 @@ let app = express()
     //Utilisation de socket.io
 let http = require('http').Server(app)
 let io = require('socket.io')(http, { cors: { origin: '*', methods: ['GET', 'POST', 'PUT', 'DELETE'] } })
-const oneDay = 1000 * 60 * 60 * 24;
+// const oneDay = 1000 * 60 * 60 * 24;
 
 
 //Middleware

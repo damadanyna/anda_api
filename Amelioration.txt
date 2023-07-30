@@ -22,3 +22,4 @@ Problème
     - Affichage de l'importation de photo de couverture
 *Connection expirer:
     - Affichage d'une page qui marque que la connexion est expiré
+    - reformuler ce phrase à chat GPT 'Les vraies produits pour des beaux achat au bon prix'
