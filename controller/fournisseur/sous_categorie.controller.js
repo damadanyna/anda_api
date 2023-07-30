@@ -1,5 +1,5 @@
-const Aut_jwt = require('../models/app_auth');
-var D = require('../models/data')
+const Aut_jwt = require('../../models/app_auth');
+var D = require('../../models/data')
 
 var sous_categorie_data = {
     sous_cat_id: { front_name: "sous_cat_id:", fac: true, },
