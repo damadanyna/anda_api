@@ -39,6 +39,7 @@ router.delete('/produit/:prod_id', auth, require('../controller/fournisseur/prod
 // CLIENT
 router.get('/fournList', require('../controller/fournisseur/fournisseur.controller').getList);
 router.get('/prodList', require('../controller/fournisseur/product.controller').getProdList);
+router.get('/insertAuto', require('../controller/fournisseur/fournisseur.controller').setAutoImg);
 
 
 

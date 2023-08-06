@@ -13,8 +13,8 @@
  class images {
      static async uploaImg(req, res) {
          var name_ = new Date().getTime() + '.jpg'
-         var compImgFileSavePath = path.join(__dirname, '../../', 'img', 'compressed', 'anda_img_' + name_)
-         var compImgFileSavePath2 = path.join(__dirname, '../../', 'img', 'anda_img_' + name_)
+         var compImgFileSavePath = path.join(__dirname, '../../../', 'img', 'compressed', 'anda_img_' + name_)
+         var compImgFileSavePath2 = path.join(__dirname, '../../../', 'img', 'anda_img_' + name_)
 
          var temp = compImgFileSavePath.split('/');
          var big_name = temp[temp.length - 1];
@@ -26,56 +26,64 @@
              img_big: big_name
          }
 
-         sharp(req.file.path).jpeg({
-             quality: 60
-         }).toFile(compImgFileSavePath2, (e, info) => {
-             if (e) {
-                 res.send(e)
-             } else {
-                 sharp(req.file.path).resize(500, 500).jpeg({
-                     quality: 20,
-                     chromaSubsampling: '4:4:4'
-                 }).toFile(compImgFileSavePath, async(e, info) => {
-                     if (e) {
-                         res.send(e)
-                     } else {
+       try { 
+        sharp(req.file.path).jpeg({
+            quality: 60
+        }).toFile(compImgFileSavePath2, (e, info) => {
+            if (e) { 
+                res.send(e)
+            } else {
+                sharp(req.file.path).resize(500, 500).jpeg({
+                    quality: 20,
+                    chromaSubsampling: '4:4:4'
+                }).toFile(compImgFileSavePath, async(e, info) => {
+                    if (e) {
+                        res.send(e)
+                    } else {
 
-                         await D.set('images', _data)
-                         res.send({ status: true, message: 'success' })
-                     }
-                 })
-             }
-         })
+                        await D.set('images', _data)
+                        res.send({ status: true, message: 'success' })
+                    }
+                })
+            }
+        })
+       } catch (e) {
+        console.log("Erreur de l'insertions: "+e);
+       }
      }
 
      static async update_it(req, res) {
          var name_ = new Date().getTime() + '.jpg'
-         var compImgFileSavePath = path.join(__dirname, '../../', 'img', 'compressed', 'anda_img_' + name_)
-         var compImgFileSavePath2 = path.join(__dirname, '../../', 'img', 'anda_img_' + name_)
+         var compImgFileSavePath = path.join(__dirname, '../../../', 'img', 'compressed', 'anda_img_' + name_)
+         var compImgFileSavePath2 = path.join(__dirname, '../../../', 'img', 'anda_img_' + name_)
 
          var temp = compImgFileSavePath.split('/');
          var big_name = temp[temp.length - 1];
          var smal_name = temp[temp.length - 1];
-         sharp(req.file.path).jpeg({
-             quality: 60
-         }).toFile(compImgFileSavePath2, (e, info) => {
-             if (e) {
-                 res.send(e)
-             } else {
-                 sharp(req.file.path).resize(500, 500).jpeg({
-                     quality: 20,
-                     chromaSubsampling: '4:4:4'
-                 }).toFile(compImgFileSavePath, async(e, info) => {
-                     if (e) {
-                         res.send(e)
-                     } else {
-                         await D.updateWhere('images', { img_midle: smal_name, img_big: big_name }, { img_id: req.params.img_id })
-
-                         res.send({ status: true, message: 'success' })
-                     }
-                 })
-             }
-         })
+        try {
+            sharp(req.file.path).jpeg({
+                quality: 60
+            }).toFile(compImgFileSavePath2, (e, info) => {
+                if (e) {
+                    res.send(e)
+                } else {
+                    sharp(req.file.path).resize(500, 500).jpeg({
+                        quality: 20,
+                        chromaSubsampling: '4:4:4'
+                    }).toFile(compImgFileSavePath, async(e, info) => {
+                        if (e) {
+                            res.send(e)
+                        } else {
+                            await D.updateWhere('images', { img_midle: smal_name, img_big: big_name }, { img_id: req.params.img_id })
+   
+                            res.send({ status: true, message: 'success' })
+                        }
+                    })
+                }
+            })
+        } catch (e) {
+            console.log('Erreur du mise à jour: '+e);
+        }
      }
 
      static async update(req, res) {

@@ -32,6 +32,7 @@
              })
 
              if (_list_error.length > 0) {
+                console.log({ status: false, message: "Certains champs sont vide", data: _list_error });
                  return res.send({ status: false, message: "Certains champs sont vide", data: _list_error })
              }
 

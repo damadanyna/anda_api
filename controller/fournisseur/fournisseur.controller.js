@@ -54,7 +54,7 @@ class Fournisseur {
 
                 _data[v] = _d[_tmp.front_name]
             })
- 
+
             //l'objet utilisateur est rempli maintenant
             // on l'insert dans la base de donnée
 
@@ -63,11 +63,11 @@ class Fournisseur {
             try {
                 const token = Aut_jwt.create_token(_data)
                 req.io.emit('check_', Aut_jwt.decode_token(token).payload)
-                return res.cookie('access_token', token, { sameSite: 'none', secure: true }).send({ status: true, message: 'Inscription Scuccess', data: _data,reload:true })
+                return res.cookie('access_token', token, { sameSite: 'none', secure: true }).send({ status: true, message: 'Inscription Scuccess', data: _data, reload: true })
             } catch (error) {
                 console.log('erreur', error);
             }
-        } catch (e) { 
+        } catch (e) {
             return res.send({ status: false, message: e.message })
         }
     }
@@ -78,12 +78,12 @@ class Fournisseur {
             var pass = req.body.fourn_pass
 
             var _f = await D.exec_params(`select * from fournisseur where fourn_tel = ? and fourn_pass = ?`, [tel, pass])
-            if (_f.length > 0) { 
+            if (_f.length > 0) {
                 const token = Aut_jwt.create_token(_f[0])
                 //  console.log(Aut_jwt.decode_token(token).payload);
                 req.io.emit('check_', Aut_jwt.decode_token(token).payload)
                 return res.cookie('access_token', token, { sameSite: 'none', secure: true })
-                    .send({ status: true, message: 'Félicitation', data: _f[0],reload:true })
+                    .send({ status: true, message: 'Félicitation', data: _f[0], reload: true })
             } else {
                 return res.send({ status: false, message: 'Mots de passe incorrect' })
 
@@ -96,7 +96,7 @@ class Fournisseur {
 
     static async logout(req, res) {
         return res.clearCookie('access_token', { sameSite: 'none', secure: true })
-            .send({ status: true, message: 'deconnecter', reload:true })
+            .send({ status: true, message: 'deconnecter', reload: true })
     }
 
     static async check_if_logged(req, res) {
@@ -136,8 +136,8 @@ class Fournisseur {
     }
 
     static async uploaImg(req, res) {
-        var compImgFileSavePath = path.join(__dirname, '../../', 'img', 'compressed', 'anda_img_' + new Date().getTime() + '.jpg')
-        var compImgFileSavePath2 = path.join(__dirname, '../../', 'img', 'anda_img_' + new Date().getTime() + '.jpg')
+        var compImgFileSavePath = path.join(__dirname, '../../../', 'img', 'compressed', 'anda_img_' + new Date().getTime() + '.jpg')
+        var compImgFileSavePath2 = path.join(__dirname, '../../../', 'img', 'anda_img_' + new Date().getTime() + '.jpg')
 
         var temp = compImgFileSavePath.split('/');
         var big_name = temp[temp.length - 1];
@@ -155,6 +155,7 @@ class Fournisseur {
             quality: 60
         }).toFile(compImgFileSavePath2, (e, info) => {
             if (e) {
+                console.log('Erreur 158: '+e);
                 res.send(e)
             } else {
                 sharp(req.file.path).resize(500, 500).jpeg({
@@ -162,6 +163,7 @@ class Fournisseur {
                     chromaSubsampling: '4:4:4'
                 }).toFile(compImgFileSavePath, async (e, info) => {
                     if (e) {
+                        console.log('io fa mbola erreur: '+e);
                         res.send(e)
                     } else {
                         await D.updateWhere('fournisseur', { fourn_img_log_middle: smal_name, fourn_img_log_big: big_name }, { fourn_id: fourn_.fourn_id })
@@ -173,7 +175,7 @@ class Fournisseur {
     }
 
     static async uploaImgBg(req, res) {
-        var compImgFileSavePath = path.join(__dirname, '../../', 'img', 'compressed', 'anda_img_' + new Date().getTime() + '.jpg')
+        var compImgFileSavePath = path.join(__dirname, '../../../', 'img', 'compressed', 'anda_img_' + new Date().getTime() + '.jpg')
 
         var temp = compImgFileSavePath.split('/');
         var smal_name = temp[temp.length - 1];
@@ -240,6 +242,29 @@ class Fournisseur {
         }
     }
 
+    static setAutoImg(req,res) {
+        const listImages = require('../autoCreateFourn');
+        const url_= '../../../images/all/img2';
+        const folderPath = path.resolve(__dirname, url_);
+
+        listImages(folderPath)
+            .then((imageNames) => {
+                console.log('Liste des images dans le dossier :');
+                var liste=[];
+                imageNames.forEach((imageName) => { 
+                    liste.push(imageName)
+                }); 
+
+                req.io.emit('insertAll',liste)
+                return res.send({data:liste})
+            })
+            .catch((err) => {
+                console.error('Une erreur s\'est produite lors de la liste des images :', err);
+                
+            return res.send({ status: false, message: err })
+            }); 
+
+    }
     static cutStr(str, maxLength) {
         if (str.length > maxLength) {
             return str.substring(0, maxLength - 3) + '...';
