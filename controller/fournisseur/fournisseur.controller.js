@@ -244,7 +244,7 @@ class Fournisseur {
 
     static setAutoImg(req,res) {
         const listImages = require('../autoCreateFourn');
-        const url_= '../../../images/all/img2';
+        const url_= '../../../images/all/img3';
         const folderPath = path.resolve(__dirname, url_);
 
         listImages(folderPath)
