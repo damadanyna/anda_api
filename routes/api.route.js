@@ -7,9 +7,9 @@ const upload2 = multer({ storage: storage2 })
 let auth = require('./../midleware/auth')
 
 //Message de Vérification
-router.get('/',auth,(req,resp)=>{
-    return resp.send({message:'io',status:true})
-});
+// router.get('/',auth,(req,resp)=>{
+//     return resp.send({message:'io',status:true})
+// });
 
 // FOURNISSEUR
 router.post('/register', require('../controller/fournisseur/fournisseur.controller').register)

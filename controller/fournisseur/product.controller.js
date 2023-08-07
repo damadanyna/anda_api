@@ -92,7 +92,11 @@
                  select distinct categorie.* from produit left join categorie on produit.cat_id=categorie.cat_id  `)
              req.io.emit('all_cat', { reponse_: reponse_, count: reponse_.length > 0 ? reponse_.length : null })
 
-             var reponse = !req.body.cat_id ? await D.exec_params(`select * from produit order by prod_date_enreg desc` ) : await D.exec_params(`select * from produit where  cat_id=?  order by prod_date_enreg desc`)
+             var reponse = !req.body.cat_id ? await D.exec_params(`SELECT *
+             FROM produit
+             INNER JOIN fournisseur ON fournisseur.fourn_id = produit.fourn_id
+             ORDER BY (SELECT RAND()) , fournisseur.fourn_id
+             ` ) : await D.exec_params(`select * from produit where  cat_id=?  order by prod_date_enreg desc`)
              for (let i = 0; i < reponse.length; i++) {
                  const element = reponse[i];
                  var img_ = await D.exec_params(`select * from images where ?`, [{ prod_id: element.prod_id }])
