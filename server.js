@@ -7,11 +7,10 @@ var cors = require('cors')
 const fs = require("fs");
 // const { nextTick } = require('process')
 let app = express()
-    //Utilisation de socket.io
+//Utilisation de socket.io
 let http = require('http').Server(app)
 let io = require('socket.io')(http, { cors: { origin: '*', methods: ['GET', 'POST', 'PUT', 'DELETE'] } })
 // const oneDay = 1000 * 60 * 60 * 24;
-
 
 //Middleware
 // cookie parser middleware 
@@ -33,16 +32,11 @@ io.on('connection', (socket) => {
         console.log('io');
     })
 })
-
-
 app.use((req, res, next) => {
     req.io = io
     req.escape_html = escape_html
     next()
 })
-
-
-
 
 app.use('/api', require('./routes/api.route'))
 

@@ -60,13 +60,11 @@
 
 
      static async getList(req, res) {
-
          var fourn = req.params
          try {
              var reponse_ = await D.exec_params(`
                  select distinct categorie.* from produit left join categorie on produit.cat_id=categorie.cat_id where produit.fourn_id=? `, [fourn.fourn_id])
              req.io.emit('all_cat', { reponse_: reponse_, count: reponse_.length > 0 ? reponse_.length : null })
-
              var reponse = !req.body.cat_id ? await D.exec_params(`select * from produit where fourn_id=? order by prod_date_enreg desc`, [fourn.fourn_id]) : await D.exec_params(`select * from produit where fourn_id=? and cat_id=?  order by prod_date_enreg desc`, [fourn.fourn_id, req.body.cat_id])
              for (let i = 0; i < reponse.length; i++) {
                  const element = reponse[i];
@@ -77,8 +75,8 @@
              for (const iterator of reponse) {
                  iterator['prod_date_enreg'] = moment(iterator['prod_date_enreg']).fromNow();
              }
-             req.io.emit('all_product', { status: true, reponse, nb_total: nb_total[0].nb })
-             return res.send()
+             req.io.emit('all_product', {reponse,nb_total})
+             return res.send({reponse,nb_total})
          } catch (e) {
              console.error(e)
              return res.send({ status: false, message: "Erreur dans la base de donnée" })
