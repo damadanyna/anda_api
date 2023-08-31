@@ -82,8 +82,7 @@
              return res.send({ status: false, message: "Erreur dans la base de donnée" })
          }
      }
-     static async getProdList(req, res) {
-
+     static async getProdList(req, res) { 
          var fourn = req.params
          try {
              var reponse_ = await D.exec_params(`
