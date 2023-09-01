@@ -12,7 +12,7 @@ let auth = require('./../midleware/auth')
 // });
 
 // FOURNISSEUR
-// router.post('/register', require('../controller/fournisseur/fournisseur.controller').register)
+router.post('/registerClient', require('../controller/client/client.controller').register)
 // router.post('/login', require('../controller/fournisseur/fournisseur.controller').login)
 // router.post('/logout', require('../controller/fournisseur/fournisseur.controller').logout)
 // router.get('/check', auth, require('../controller/fournisseur/fournisseur.controller').check_if_logged)
@@ -37,10 +37,10 @@ let auth = require('./../midleware/auth')
 // router.get('/my_category/:fourn_id', auth, require('../controller/product.controller').get_my_category);
 
 // CLIENT
-router.get('/fournList', require('../controller/fournisseur/fournisseur.controller').getList);
-router.get('/prodList/:offset', require('../controller/fournisseur/product.controller').getProdList);
-router.get('/produit/:fourn_id', require('../controller/fournisseur/product.controller').getFournList);
-router.get('/pers_categorie/:fourn_id', require('../controller/fournisseur/categorie.controller').get_all_cat_from);
+router.get('/fournList', require('../controller/client/client.controller').getList);
+router.get('/prodList/:offset', require('../controller/client/product.controller').getProdList);
+router.get('/produit/:fourn_id', require('../controller/client/product.controller').getFournList);
+router.get('/pers_categorie/:fourn_id', require('../controller/client/categorie.controller').get_all_cat_from);
 // router.get('/insertAuto', require('../controller/fournisseur/fournisseur.controller').setAutoImg);
 
 

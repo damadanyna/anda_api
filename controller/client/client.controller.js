@@ -3,34 +3,30 @@ var D = require('../../models/data')
 const path = require('path')
 const sharp = require('sharp')
 
-var fournisseur_data = {
-    fourn_id: { front_name: "fourn_id:", fac: true, },
-    ville_id: { front_name: "ville_id", fac: false, },
-    localisation_: { front_name: "localisation_", fac: false },
-    fourn_name: { front_name: "fourn_name", fac: false, },
-    fourn_email: { front_name: "fourn_email", fac: false, },
-    fourn_nif: { front_name: "fourn_nif", fac: false, },
-    fourn_stat: { front_name: "fourn_stat", fac: false, },
-    fourn_tel: { front_name: "fourn_tel", fac: false, },
-    fourn_pass: { front_name: "fourn_pass", fac: false, },
-    fourn_status: { front_name: "fourn_status", fac: false, },
-    fourn_img_log_middle: { front_name: "fourn_img_log_middle", fac: true, },
-    fourn_img_bg: { front_name: "fourn_img_bg", fac: true, },
-    fourn_img_log_big: { front_name: "fourn_img_log_big", fac: true },
+var client_data = {
+    client_id: { front_name: "client_id:", fac: true, },
+    client_local: { front_name: " client_local", fac: false },
+    client_nom: { front_name: " client_nom", fac: false, },
+    client_prenom: { front_name: " client_prenom", fac: false, },
+    client_tel: { front_name: "  client_tel", fac: false, },
+    client_email: { front_name: " client_email", fac: false, },
+    client_mdp: { front_name: "client_mdp", fac: false, },
+    client_img_midle: { front_name: "  client_img_midle", fac: true, },
+    client_img_big: { front_name: " client_img_big", fac: true, },
 };
 
-class Fournisseur {
+class Client {
     static async register(req, res) {
         var _d = req.body;
 
-        //Vérification du fournisseur
-        const _pd_keys = Object.keys(fournisseur_data)
+        //Vérification du client
+        const _pd_keys = Object.keys(client_data)
         var _tmp = {}
         var _list_error = []
         try {
 
             _pd_keys.forEach((v) => {
-                _tmp = fournisseur_data[v]
+                _tmp = client_data[v]
 
                 if (!_tmp.fac && !_d[_tmp.front_name]) {
                     _list_error.push({ code: _tmp.front_name })
@@ -45,7 +41,7 @@ class Fournisseur {
             // on passe à l'insertion du utilisateur
             var _data = {}
             _pd_keys.forEach((v, i) => {
-                _tmp = fournisseur_data[v]
+                _tmp = client_data[v]
 
 
                 if (_tmp.format != undefined) {
@@ -58,7 +54,7 @@ class Fournisseur {
             //l'objet utilisateur est rempli maintenant
             // on l'insert dans la base de donnée
 
-            await D.set('fournisseur', _data)
+            await D.set('client', _data)
             console.log(D);
             try {
                 const token = Aut_jwt.create_token(_data)
@@ -74,10 +70,10 @@ class Fournisseur {
 
     static async login(req, res) {
         try {
-            var tel = req.body.fourn_tel
-            var pass = req.body.fourn_pass
+            var tel = req.body.client_tel
+            var pass = req.body.client_mdp
 
-            var _f = await D.exec_params(`select * from fournisseur where fourn_tel = ? and fourn_pass = ?`, [tel, pass])
+            var _f = await D.exec_params(`select * from client where  client_tel = ? and client_mdp = ?`, [tel, pass])
             if (_f.length > 0) {
                 const token = Aut_jwt.create_token(_f[0])
                 //  console.log(Aut_jwt.decode_token(token).payload);
@@ -114,21 +110,21 @@ class Fournisseur {
     static async getList(req, res) {
         var filters = req.query
         var _obj_pat = {
-            fourn_id: 'fourn_id',
+            client_id: 'client_id',
         }
-        var default_sort_by = 'fourn_id'
+        var default_sort_by = 'client_id'
         filters.page = (!filters.page) ? 1 : parseInt(filters.page)
         filters.limit = (!filters.limit) ? 100 : parseInt(filters.limit)
         filters.sort_by = (!filters.sort_by) ? _obj_pat[default_sort_by] : _obj_pat[filters.sort_by]
         try {
-            var reponse = await D.exec_params(`select * from fournisseur   order by ${filters.sort_by} limit ? offset ? `, [
+            var reponse = await D.exec_params(`select * from client   order by ${filters.sort_by} limit ? offset ? `, [
                 filters.limit,
                 (filters.page - 1) * filters.limit
             ])
             // req.io.emit('getFournList', reponse)
-            var nb_total_fournisseur = (await D.exec('select count(*) as nb from fournisseur'))[0].nb
+            var nb_total_client = (await D.exec('select count(*) as nb from client'))[0].nb
 
-            return res.send({ status: true, reponse, nb_total_fournisseur })
+            return res.send({ status: true, reponse, nb_total_client })
         } catch (e) {
             console.error(e)
             return res.send({ status: false, message: "Erreur dans la base de donnée" })
@@ -155,7 +151,7 @@ class Fournisseur {
             quality: 60
         }).toFile(compImgFileSavePath2, (e, info) => {
             if (e) {
-                console.log('Erreur 158: '+e);
+                console.log('Erreur 158: ' + e);
                 res.send(e)
             } else {
                 sharp(req.file.path).resize(500, 500).jpeg({
@@ -163,10 +159,10 @@ class Fournisseur {
                     chromaSubsampling: '4:4:4'
                 }).toFile(compImgFileSavePath, async (e, info) => {
                     if (e) {
-                        console.log('io fa mbola erreur: '+e);
+                        console.log('io fa mbola erreur: ' + e);
                         res.send(e)
                     } else {
-                        await D.updateWhere('fournisseur', { fourn_img_log_middle: smal_name, fourn_img_log_big: big_name }, { fourn_id: fourn_.fourn_id })
+                        await D.updateWhere('client', { client_img_midle: smal_name, fourn_img_log_big: big_name }, { client_id: fourn_.client_id })
                         res.send({ status: true, message: 'success' })
                     }
                 })
@@ -194,7 +190,7 @@ class Fournisseur {
             if (e) {
                 res.send(e)
             } else {
-                await D.updateWhere('fournisseur', { fourn_img_bg: smal_name }, { fourn_id: fourn_.fourn_id })
+                await D.updateWhere('client', { client_img_big: smal_name }, { client_id: fourn_.client_id })
                 res.send({ status: true, message: 'success' })
             }
         })
@@ -203,10 +199,10 @@ class Fournisseur {
 
     static async update(req, res) {
         var _data_body = req.body;
-        var four_model = fournisseur_data;
+        var four_model = client_data;
         var data_temp = {}
         var _list_error = []
-        //  variable four_ = fournisseur dans le cookie
+        //  variable four_ = client dans le cookie
         var fourn_ = null
         var array = req.headers.cookie.split(';');
         for (var i = 0; i < array.length; i++) {
@@ -231,7 +227,7 @@ class Fournisseur {
             four_model[key] = _data_body[key]
         }
         try {
-            await D.updateWhere('fournisseur', four_model, { fourn_id: fourn_.fourn_id })
+            await D.updateWhere('client', four_model, { client_id: fourn_.client_id })
             var token = Aut_jwt.create_token(four_model)
             req.io.emit('check_', Aut_jwt.decode_token(token).payload)
             return res.cookie('access_token', token, { sameSite: 'none', secure: true })
@@ -242,27 +238,27 @@ class Fournisseur {
         }
     }
 
-    static setAutoImg(req,res) {
+    static setAutoImg(req, res) {
         const listImages = require('../autoCreateFourn');
-        const url_= '../../../images/all/img4';
+        const url_ = '../../../images/all/img4';
         const folderPath = path.resolve(__dirname, url_);
 
         listImages(folderPath)
             .then((imageNames) => {
                 console.log('Liste des images dans le dossier :');
-                var liste=[];
-                imageNames.forEach((imageName) => { 
+                var liste = [];
+                imageNames.forEach((imageName) => {
                     liste.push(imageName)
-                }); 
+                });
 
-                req.io.emit('insertAll',liste)
-                return res.send({data:liste})
+                req.io.emit('insertAll', liste)
+                return res.send({ data: liste })
             })
             .catch((err) => {
                 console.error('Une erreur s\'est produite lors de la liste des images :', err);
-                
-            return res.send({ status: false, message: err })
-            }); 
+
+                return res.send({ status: false, message: err })
+            });
 
     }
     static cutStr(str, maxLength) {
@@ -272,4 +268,4 @@ class Fournisseur {
         return str;
     }
 }
-module.exports = Fournisseur;
+module.exports = Client;

@@ -7,6 +7,17 @@ CREATE TABLE IF NOT EXISTS comments (
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
   FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
 );
+CREATE TABLE IF NOT EXISTS comments (
+ client_id 
+    client_local ,
+    client_nom,
+    client_prenome, ,
+    client_tel ,
+    client_email, ,
+    client_mdp,
+    client_img_midletrue, ,
+    client_img_bige, ,
+);
 
 -- Table des réactions
 CREATE TABLE IF NOT EXISTS reactions (
