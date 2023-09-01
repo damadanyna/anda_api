@@ -125,7 +125,7 @@ class Fournisseur {
                 filters.limit,
                 (filters.page - 1) * filters.limit
             ])
-            req.io.emit('getFournList', reponse)
+            // req.io.emit('getFournList', reponse)
             var nb_total_fournisseur = (await D.exec('select count(*) as nb from fournisseur'))[0].nb
 
             return res.send({ status: true, reponse, nb_total_fournisseur })

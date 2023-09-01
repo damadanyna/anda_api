@@ -102,7 +102,8 @@
              GROUP BY produit.sous_cat_id LIMIT ?
                 `, [ filters.fourn_id,   filters.limit, 
              ])
-             req.io.emit('categorie', { reponse })
+             req.io.emit('sous_categorie', { reponse })
+            //  console.log(reponse);
              return res.send(reponse)
                  //  return res.send({ status: true, reponse, nb_total_categorie })
          } catch (e) {
