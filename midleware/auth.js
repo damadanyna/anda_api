@@ -6,14 +6,13 @@ const verifyToken = async(req, res, next) => {
     const token = req.cookies.access_token
         // console.log(req);
     if (!token) {
-        // return res.send({ message: "Accun compte n'est trouvé", status: 401 })
         return next()
     }
     setTimeout(() => {
         
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET,(error, user) => {
-        if (error) { 
-            return res.send({ message: 'La connexion est expiré', status: 403 })
+        if (error) {  
+            return res.send({ message: 'La connexion est expiré', status: false })
             
         }
         req.user = user  

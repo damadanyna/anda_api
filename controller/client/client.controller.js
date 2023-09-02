@@ -4,50 +4,45 @@ const path = require('path')
 const sharp = require('sharp')
 
 var client_data = {
-    client_id: { front_name: "client_id:", fac: true, },
-    client_local: { front_name: " client_local", fac: false },
-    client_nom: { front_name: " client_nom", fac: false, },
-    client_prenom: { front_name: " client_prenom", fac: false, },
-    client_tel: { front_name: "  client_tel", fac: false, },
-    client_email: { front_name: " client_email", fac: false, },
-    client_mdp: { front_name: "client_mdp", fac: false, },
-    client_img_midle: { front_name: "  client_img_midle", fac: true, },
-    client_img_big: { front_name: " client_img_big", fac: true, },
+    client_id: { front_name: "client_id", fac: false, },
+    client_local: { front_name: "client_local", fac: false },
+    client_nom: { front_name: "client_nom", fac: false, }, 
+    client_tel: { front_name: "client_tel", fac: false, },
+    client_date_naiss: { front_name: "client_date_naiss", fac: false, },
+    client_email: { front_name: "client_email", fac: false, },
+    client_pwd: { front_name: "client_pwd", fac: false, },
+    client_img_midle: { front_name: "client_img_midle", fac: true, },
+    client_img_big: { front_name: "client_img_big", fac: true, },
 };
 
 class Client {
     static async register(req, res) {
-        var _d = req.body;
-
+        var _d = req.body; 
         //Vérification du client
         const _pd_keys = Object.keys(client_data)
         var _tmp = {}
         var _list_error = []
-        try {
-
+        try { 
             _pd_keys.forEach((v) => {
-                _tmp = client_data[v]
-
+                _tmp = client_data[v] 
                 if (!_tmp.fac && !_d[_tmp.front_name]) {
                     _list_error.push({ code: _tmp.front_name })
                 }
             })
 
-            if (_list_error.length > 0) {
+            if (_list_error.length > 0) { 
+                console.log(_list_error);
                 return res.send({ status: false, message: "Certains champs sont vide", data: _list_error })
-            }
-
+            } 
             //Si la vérification c'est bien passé, 
             // on passe à l'insertion du utilisateur
             var _data = {}
             _pd_keys.forEach((v, i) => {
-                _tmp = client_data[v]
-
+                _tmp = client_data[v] 
 
                 if (_tmp.format != undefined) {
                     _d[_tmp.front_name] = _tmp.format(_d[_tmp.front_name])
-                }
-
+                } 
                 _data[v] = _d[_tmp.front_name]
             })
 
@@ -55,13 +50,14 @@ class Client {
             // on l'insert dans la base de donnée
 
             await D.set('client', _data)
-            console.log(D);
+            // console.log(D);
             try {
                 const token = Aut_jwt.create_token(_data)
-                req.io.emit('check_', Aut_jwt.decode_token(token).payload)
+                // req.io.emit('check_', Aut_jwt.decode_token(token).payload)
                 return res.cookie('access_token', token, { sameSite: 'none', secure: true }).send({ status: true, message: 'Inscription Scuccess', data: _data, reload: true })
             } catch (error) {
-                console.log('erreur', error);
+               
+                return res.send({ status: false, message: "Certains champs sont vide", data: error })
             }
         } catch (e) {
             return res.send({ status: false, message: e.message })
@@ -71,12 +67,11 @@ class Client {
     static async login(req, res) {
         try {
             var tel = req.body.client_tel
-            var pass = req.body.client_mdp
+            var pass = req.body.client_pwd
 
-            var _f = await D.exec_params(`select * from client where  client_tel = ? and client_mdp = ?`, [tel, pass])
+            var _f = await D.exec_params(`select * from client where  client_tel = ? and client_pwd = ?`, [tel, pass])
             if (_f.length > 0) {
-                const token = Aut_jwt.create_token(_f[0])
-                //  console.log(Aut_jwt.decode_token(token).payload);
+                const token = Aut_jwt.create_token(_f[0]) 
                 req.io.emit('check_', Aut_jwt.decode_token(token).payload)
                 return res.cookie('access_token', token, { sameSite: 'none', secure: true })
                     .send({ status: true, message: 'Félicitation', data: _f[0], reload: true })
@@ -110,21 +105,21 @@ class Client {
     static async getList(req, res) {
         var filters = req.query
         var _obj_pat = {
-            client_id: 'client_id',
+            fourn_id: 'fourn_id',
         }
-        var default_sort_by = 'client_id'
+        var default_sort_by = 'fourn_id'
         filters.page = (!filters.page) ? 1 : parseInt(filters.page)
         filters.limit = (!filters.limit) ? 100 : parseInt(filters.limit)
         filters.sort_by = (!filters.sort_by) ? _obj_pat[default_sort_by] : _obj_pat[filters.sort_by]
         try {
-            var reponse = await D.exec_params(`select * from client   order by ${filters.sort_by} limit ? offset ? `, [
+            var reponse = await D.exec_params(`select * from fournisseur   order by ${filters.sort_by} limit ? offset ? `, [
                 filters.limit,
                 (filters.page - 1) * filters.limit
             ])
             // req.io.emit('getFournList', reponse)
-            var nb_total_client = (await D.exec('select count(*) as nb from client'))[0].nb
+            var nb_total_fourn = (await D.exec('select count(*) as nb from fournisseur'))[0].nb
 
-            return res.send({ status: true, reponse, nb_total_client })
+            return res.send({ status: true, reponse, nb_total_fourn })
         } catch (e) {
             console.error(e)
             return res.send({ status: false, message: "Erreur dans la base de donnée" })

@@ -69,6 +69,24 @@ UNLOCK TABLES;
 -- Table structure for table `client`
 --
 
+DROP TABLE IF EXISTS `client`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `client` (
+  `client_id` varchar(100) NOT NULL,
+  `client_nom` varchar(150) NOT NULL,
+  `client_tel` varchar(50) NOT NULL,
+  `client_email` varchar(255) NOT NULL,
+  `client_date_naiss` varchar(255) NOT NULL,
+  `client_local` varchar(150) NOT NULL,
+  `client_pwd` varchar(150) NOT NULL,
+  `client_img_midle` varchar(60)  NULL,
+  `client_img_big` varchar(60)  NULL,
+  `client_date_enreg` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`client_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
 --
 -- Dumping data for table `client`
 --
@@ -213,24 +231,6 @@ CREATE TABLE `produit` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
-DROP TABLE IF EXISTS `client`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `client` (
-  `client_id` varchar(100) NOT NULL,
-  `client_nom` varchar(150) NOT NULL,
-  `client_tel` varchar(50) NOT NULL,
-  `client_email` varchar(255) NOT NULL,
-  `client_date_naiss` varchar(255) NOT NULL,
-  `client_local` varchar(150) NOT NULL,
-  `client_img_midle` varchar(60) NOT NULL,
-  `client_img_big` varchar(60) NOT NULL,
-  `client_date_enreg` datetime DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`client_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
- 
 -- Dumping data for table `produit`
 --
 
@@ -402,4 +402,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-09-01 15:22:21
+-- Dump completed on 2023-09-01 17:18:05
