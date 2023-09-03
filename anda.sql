@@ -80,8 +80,8 @@ CREATE TABLE `client` (
   `client_date_naiss` varchar(255) NOT NULL,
   `client_local` varchar(150) NOT NULL,
   `client_pwd` varchar(150) NOT NULL,
-  `client_img_midle` varchar(60)  NULL,
-  `client_img_big` varchar(60)  NULL,
+  `client_img_midle` varchar(60) DEFAULT NULL,
+  `client_img_big` varchar(60) DEFAULT NULL,
   `client_date_enreg` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`client_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -93,6 +93,7 @@ CREATE TABLE `client` (
 
 LOCK TABLES `client` WRITE;
 /*!40000 ALTER TABLE `client` DISABLE KEYS */;
+INSERT INTO `client` VALUES ('a5fd9irxnok','Dama','tel','email','1998-04-02','2','mdp',NULL,NULL,'2023-09-01 22:07:13');
 /*!40000 ALTER TABLE `client` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -293,28 +294,29 @@ INSERT INTO `sous_categorie` VALUES (1,1,'ordinateur','2023-02-17 14:37:27'),(2,
 UNLOCK TABLES;
 
 --
--- Table structure for table `tendence`
+-- Table structure for table `tendance`
 --
 
-DROP TABLE IF EXISTS `tendence`;
+DROP TABLE IF EXISTS `tendance`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tendence` (
+CREATE TABLE `tendance` (
   `tend_id` int NOT NULL AUTO_INCREMENT,
-  `client_id` int NOT NULL,
+  `client_id` varchar(255) NOT NULL,
   `cat_id` int NOT NULL,
   `tend_date_enreg` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`tend_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `tendence`
+-- Dumping data for table `tendance`
 --
 
-LOCK TABLES `tendence` WRITE;
-/*!40000 ALTER TABLE `tendence` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tendence` ENABLE KEYS */;
+LOCK TABLES `tendance` WRITE;
+/*!40000 ALTER TABLE `tendance` DISABLE KEYS */;
+INSERT INTO `tendance` VALUES (5,'a5fd9irxnok',1,'2023-09-02 23:11:06'),(6,'a5fd9irxnok',4,'2023-09-02 23:11:06'),(7,'a5fd9irxnok',7,'2023-09-02 23:11:06'),(8,'a5fd9irxnok',9,'2023-09-02 23:11:07');
+/*!40000 ALTER TABLE `tendance` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -402,4 +404,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-09-01 17:18:05
+-- Dump completed on 2023-09-03  8:14:30

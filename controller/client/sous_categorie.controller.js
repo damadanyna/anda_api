@@ -56,16 +56,24 @@ class sous_categorie {
         }
     }
 
-    static async get_this_prod(req, res) {
-        var filters = req.params
+    static async get_this_prod(req, res) { 
         try {
-            var reponse = await D.exec_params(`select categorie.cat_id,categorie.cat_label from 
-            categorie left join sous_categorie on categorie.cat_id=sous_categorie.cat_id
-            where sous_cat_id=${filters.sous_cat_id}`)
-            req.io.emit('categorie', { reponse })
-            res.send()
+            var reponse = await D.exec_params(`select * from  categorie `)  
+            res.send({ status: true, data: reponse })
         } catch (e) {
             console.error(e)
+            return res.send({ status: false, message: "Erreur dans la base de donnée" })
+        }
+    }
+
+    static async set_client_tendance(req, res) { 
+        try { 
+            for (let i = 0; i < req.body.length; i++) {
+                const element = req.body[i];
+                await D.set('tendance', {client_id:req.params.client_id,cat_id:element})
+            }
+            res.send({ status: true, message:'Tendance ajouter avec succés' })
+        } catch (e) { 
             return res.send({ status: false, message: "Erreur dans la base de donnée" })
         }
     }
@@ -85,7 +93,7 @@ class sous_categorie {
                 (filters.page - 1) * filters.limit
             ])
             req.io.emit('sous_categorie', { reponse })
-                //  return res.send({ status: true, reponse, nb_total_sous_categorie })
+            //  return res.send({ status: true, reponse, nb_total_sous_categorie })
         } catch (e) {
             console.error(e)
             return res.send({ status: false, message: "Erreur dans la base de donnée" })

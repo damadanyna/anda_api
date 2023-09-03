@@ -1,5 +1,5 @@
 {
-  "name": "publoc_api",
+  "name": "anda_api",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
@@ -19,8 +19,7 @@
     "cors": "^2.8.5",
     "dateformat": "^5.0.2",
     "dotenv": "^10.0.0",
-    "easyimage": "^2.2.1",
-    "electron-squirrel-startup": "^1.0.0",
+    "easyimage": "^2.2.1", 
     "express": "^4.17.1",
     "express-session": "^1.17.3",
     "gm": "^1.23.1",

@@ -12,8 +12,7 @@ const verifyToken = async(req, res, next) => {
         
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET,(error, user) => {
         if (error) {  
-            return res.send({ message: 'La connexion est expiré', status: false })
-            
+            return res.send({ message: 'La connexion est expiré', status: false }) 
         }
         req.user = user  
         return next()
