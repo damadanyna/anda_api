@@ -1,7 +1,6 @@
 /node_modules
 /uploads/*
-nlog.txt
-elog.txt
+.txt 
 /test
 /files/*
 
