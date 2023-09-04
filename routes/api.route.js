@@ -33,20 +33,20 @@ let auth = require('./../midleware/auth')
 // router.get('/my_category/:fourn_id', auth, require('../controller/product.controller').get_my_category);
 
 // CLIENT
-router.post('/registerClient', require('../controller/client/client.controller').register);
-router.post('/login', require('../controller/client/client.controller').login);
-router.get('/check', auth, require('../controller/client/client.controller').check_if_logged);
+router.post('/registerClient', require('../controller/client.controller').register);
+router.post('/login', require('../controller/client.controller').login);
+router.get('/check', auth, require('../controller/client.controller').check_if_logged);
 
 // PRODUIT
-router.get('/prodList/:offset',auth, require('../controller/client/product.controller').getProdList);
-router.get('/produit/:fourn_id',auth, require('../controller/client/product.controller').getFournList);
-router.get('/categorie/:client_id',auth, require('../controller/client/categorie.controller').get_this_prod);
-router.get('/cat_sous_cat',auth, require('../controller/client/sous_categorie.controller').get_this_prod);
-router.post('/tendance/:client_id',auth, require('../controller/client/sous_categorie.controller').set_client_tendance);
+router.get('/prodList/:offset',auth, require('../controller/product.controller').getProdList);
+router.get('/produit/:fourn_id',auth, require('../controller/product.controller').getFournList);
+router.get('/categorie/:client_id',auth, require('../controller/categorie.controller').get_this_prod);
+router.get('/cat_sous_cat',auth, require('../controller/sous_categorie.controller').get_this_prod);
+router.post('/tendance/:client_id',auth, require('../controller/sous_categorie.controller').set_client_tendance);
 
 // FOURNISSEUR
-router.get('/fournList',auth, require('../controller/client/client.controller').getList);
-router.get('/pers_categorie/:fourn_id',auth, require('../controller/client/categorie.controller').get_all_cat_from);
+router.get('/fournList',auth, require('../controller/client.controller').getList);
+router.get('/pers_categorie/:fourn_id',auth, require('../controller/categorie.controller').get_all_cat_from);
 // router.get('/insertAuto', require('../controller/fournisseur/fournisseur.controller').setAutoImg); 
 
 module.exports = router

@@ -1,4 +1,4 @@
-const Aut_jwt = require("../../models/app_auth");
+const Aut_jwt = require("../models/app_auth");
 var user = {
     name: "Dama",
     email: "damdanyna@gmail.com"

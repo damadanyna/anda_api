@@ -1,4 +1,4 @@
-var D = require('../../models/data')
+var D = require('../models/data')
 var moment = require('moment')
 moment.locale('fr')
 

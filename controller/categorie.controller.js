@@ -1,5 +1,5 @@
- const Aut_jwt = require('../../models/app_auth');
- var D = require('../../models/data')
+ const Aut_jwt = require('../models/app_auth');
+ var D = require('../models/data')
 
  var categorie_data = {
      cat_id: { front_name: "cat_id:", fac: true, },

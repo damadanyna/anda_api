@@ -1,5 +1,5 @@
-const Aut_jwt = require('../../models/app_auth');
-var D = require('../../models/data')
+const Aut_jwt = require('../models/app_auth');
+var D = require('../models/data')
 const path = require('path')
 const sharp = require('sharp')
 
