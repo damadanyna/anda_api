@@ -1,15 +1,15 @@
 let router = require('express').Router();
 const multer = require('multer');
 const storage2 = multer.diskStorage({})
-const upload2 = multer({ storage: storage2 })
+// const upload2 = multer({ storage: storage2 })
 
 // pour la gestion d'authentification
 let auth = require('./../midleware/auth')
 
 //Message de Vérification
-// router.get('/',auth,(req,resp)=>{
-//     return resp.send({message:'io',status:true})
-// });
+router.get('/',(req,resp)=>{
+    return resp.send({message:'api fonctionnel',status:true})
+});
 
 // router.post('/logout', require('../controller/fournisseur/fournisseur.controller').logout)
 // router.get('/fournisseur', auth, require('../controller/fournisseur/fournisseur.controller').getList);
