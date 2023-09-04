@@ -1,49 +1,8 @@
  const Aut_jwt = require('../models/app_auth');
  var D = require('../models/data')
 
- var categorie_data = {
-     cat_id: { front_name: "cat_id:", fac: true, },
-     cat_label: { front_name: "cat_label", fac: false, },
-     cat_date_enreg: { front_name: "cat_date_enreg", fac: true },
- };
-
- class categorie {
-     static async register(req, res) {
-         var _d = req.body;
-         const _pd_keys = Object.keys(categorie_data)
-         var _tmp = {}
-         var _list_error = []
-         try {
-             _pd_keys.forEach((v) => {
-                 _tmp = categorie_data[v]
-                 if (!_tmp.fac && !_d[_tmp.front_name]) {
-                     _list_error.push({ code: _tmp.front_name })
-                 }
-             })
-             if (_list_error.length > 0) {
-                 return res.send({ status: false, message: "Certains champs sont vide", data: _list_error })
-             }
-             var _data = {}
-             _pd_keys.forEach((v, i) => {
-                 _tmp = categorie_data[v]
-                 if (_tmp.format != undefined) {
-                     _d[_tmp.front_name] = _tmp.format(_d[_tmp.front_name])
-                 }
-                 _data[v] = _d[_tmp.front_name]
-             })
-             await D.set('categorie', _data)
-             try {
-                 const token = Aut_jwt.create_token(_data)
-                 return res.cookie('access_token', token, { sameSite: 'none', secure: true }).send({ status: true, message: 'Inscription Scuccess', data: _data })
-             } catch (error) {
-                 console.log('erreur', error);
-             }
-         } catch (e) {
-             console.error(e)
-             return res.send({ status: false, message: "Erreur dans la base de donnée" })
-         }
-     }
-
+ 
+ class categorie { 
      static async get_this_prod(req, res) {
          var client_id = req.params.client_id
          try {
